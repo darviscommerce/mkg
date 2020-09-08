@@ -19,8 +19,8 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Mkg": "src/"
+        "psr-4": {
+            "Mkg\\": "src/"
         }
     }
 }
