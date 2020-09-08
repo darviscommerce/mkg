@@ -1,4 +1,5 @@
 {
+    "version": "0.1",
     "name": "darvis/mkg",
     "type": "library",
     "description": "Your package description goes here",
