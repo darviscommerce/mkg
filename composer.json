@@ -1,4 +1,5 @@
 {
+    "version": "0.2",
     "name": "Mkg connection tool",
     "type": "library",
     "description": "Connect your company to MKG",
