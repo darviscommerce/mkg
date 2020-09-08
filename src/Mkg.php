@@ -1,5 +1,5 @@
 <?php
-namespace App\MyClasses;
+namespace Mkg;
 
 use App\Models\PreNotification;
 use Illuminate\Support\Facades\DB;

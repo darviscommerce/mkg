@@ -1,7 +1,26 @@
 {
     "name": "darvis/mkg",
+    "type": "library",
+    "description": "Your package description goes here",
+    "keywords": ["darvis","Arvid de Jong"],
+    "homepage": "https://darvis.nl",
     "description": "I helps connecting to MKG",
+    "license": "MIT",
     "require": {
         "php": "^7.2"
+    },
+    "authors": [
+        {
+            "name": "Arvid de Jong",
+            "email": "arvid@darvis.nl",
+            "homepage": "https://darvis.nl",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Mkg": "src/",
+            "HelloWorld": "test/"
+        }
     }
 }
