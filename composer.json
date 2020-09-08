@@ -1,0 +1,7 @@
+{
+    "name": "darvis/mkg",
+    "description": "I helps connecting to MKG",
+    "require": {
+        "php": "^7.2"
+    }
+}
