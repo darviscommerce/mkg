@@ -1,9 +1,6 @@
 <?php
 namespace Mkg;
 
-use App\Models\PreNotification;
-use Illuminate\Support\Facades\DB;
-
 class Mkg {
     public  $cookies = [];
     public  $errors = [];
@@ -13,9 +10,19 @@ class Mkg {
     private $mkgUrl = null;
     private $username = null;
     private $password = null;
-
-    function __construct()
+    
+    /**
+     * __construct
+     *
+     * @param  mixed $args
+     * @return void
+     */
+    function __construct($args = ['username' => null, 'password' => null, 'customerId' => null, 'mkgUrl' => null])
     {
+        $this->username     = $args['username'];
+        $this->password     = $args['password'];
+        $this->customerId   = $args['customerId'];
+        $this->mkgUrl       = $args['mkgUrl'];
     }
     
     /**
@@ -27,8 +34,8 @@ class Mkg {
     {
         if($this->mkgUrl != null){
             $url                = $this->mkgUrl.'static/auth/j_spring_security_check';
-            $this->messages[]   = 'Server IP:'.$_SERVER['SERVER_ADDR'].'<br>';
-            $this->messages[]   = 'Start connection<br>';
+            $this->logs[]       = 'Server IP:'.$_SERVER['SERVER_ADDR'];
+            $this->logs[]       = 'Start connection';
             $headers            = [];
             $headers[]          = "X-CustomerID: ".$this->customerId;
             $headers[]          = "Content-Type: application/x-www-form-urlencoded";
