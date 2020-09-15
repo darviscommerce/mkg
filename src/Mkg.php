@@ -9,10 +9,10 @@ class Mkg
     public  $messages   = [];
     public  $logs       = [];
     public $customerId = null;
-    public $mkgUrl     = null;
+    public $docsUrl     = null;
+    public $authUrl     = null;
     public $username   = null;
     public $password   = null;
-    public $cookie     = 'cookies.txt';
 
     /**
      * __construct
@@ -20,12 +20,13 @@ class Mkg
      * @param  mixed $args
      * @return void
      */
-    function __construct($args = ['username' => null, 'password' => null, 'customerId' => null, 'mkgUrl' => null])
+    function __construct($args = ['username' => null, 'password' => null, 'customerId' => null, 'docsUrl' => null, 'authUrl' => null])
     {
         $this->username     = $args['username'];
         $this->password     = $args['password'];
         $this->customerId   = $args['customerId'];
-        $this->mkgUrl       = $args['mkgUrl'];
+        $this->docsUrl      = $args['docsUrl'];
+        $this->authUrl      = $args['authUrl'];
         $this->login();
     }
 
@@ -36,14 +37,13 @@ class Mkg
      */
     function login()
     {
-        if ($this->mkgUrl != null) {
-            $url                = $this->mkgUrl . '/static/auth/j_spring_security_check';
+        if ($this->docsUrl != null) {
             $this->logs[]       = 'Server IP:' . $_SERVER['SERVER_ADDR'];
             $this->logs[]       = 'Start connection';
             $headers[]          = "X-CustomerID: " . $this->customerId;
             $headers[]          = "Content-Type: application/x-www-form-urlencoded";
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_URL, $this->authUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_ENCODING, "");
             curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
@@ -56,9 +56,7 @@ class Mkg
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            // curl_setopt($ch, CURLOPT_HEADER, 1);
-            curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookie);
-            curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookie);
+            curl_setopt($ch, CURLOPT_HEADER, 1);
             $data = curl_exec($ch);
             /************************\
              * DEBUG
@@ -104,6 +102,12 @@ class Mkg
         }
     }
 
+    /**
+     * get
+     *
+     * @param  mixed $args
+     * @return void
+     */
     function get($args = ['type' => null])
     {
         if ($args['type'] != null) {
@@ -131,11 +135,11 @@ class Mkg
             if(isset($location)){
                 $headers            = [];
                 $headers[]          = "X-CustomerID: " . $this->customerId;
-                // foreach($this->cookies as $key => $value){
-                //     $headers[] = "Cookie: ".$key."=".$value;
-                // }
+                foreach($this->cookies as $key => $value){
+                    $headers[] = "Cookie: ".$key."=".$value;
+                }
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $this->mkgUrl . $location);
+                curl_setopt($ch, CURLOPT_URL, $this->docsUrl.$location);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_ENCODING, "");
                 curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
@@ -144,12 +148,12 @@ class Mkg
                 curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookie);
-                curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookie);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
                 $response = curl_exec($ch);
+                $this->logs[]       = 'get';
                 $this->logs[]       = $response;
+                $this->logs[]       = 'headers';
                 $this->logs[]       = $headers;
                 $response = curl_exec($ch);
                 curl_close($ch);
