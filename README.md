@@ -10,7 +10,7 @@ Here is your solution
 ## Requirements
 ============
 
-* PHP >= 5.3.7
+* PHP >= 7.4
 * cURL Extension
 
 ## Installation
