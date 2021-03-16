@@ -6,9 +6,6 @@
     "homepage": "https://darvis.nl",
     "description": "I helps connecting to MKG",
     "license": "MIT",
-    "require": {
-        "php": "^7.2"
-    },
     "authors": [
         {
             "name": "Arvid de Jong",
