@@ -57,6 +57,8 @@ class Mkg
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch, CURLOPT_TCP_FASTOPEN, 1);
+
             $data = curl_exec($ch);
             /************************\
              * DEBUG
@@ -108,6 +110,72 @@ class Mkg
      * @param  mixed $args
      * @return void
      */
+    function getLocation($location = null)
+    {
+        if ($location != null) {
+            if(isset($location)){
+                $headers            = array(
+                    'Connection: keep-alive',
+                    'Cache-Control: no-cache',
+                    'Accept: */*',
+                    'Accept-Encoding: gzip, deflate, sdch, br',
+                    'Accept-Language: en-US,en;q=0.8',
+                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+                );
+                $headers[]          = "X-CustomerID: " . $this->customerId;
+                foreach($this->cookies as $key => $value){
+                    $headers[] = "Cookie: ".$key."=".$value;
+                }
+                $ch = curl_init();
+
+                curl_setopt($ch, CURLOPT_URL, $this->docsUrl.$location);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_ENCODING, "");
+                curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT,1);
+                curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
+                // $memory1 =  memory_get_usage(); // 36640
+                // $time_start = microtime_float();
+                $response = curl_exec($ch);
+                // $memory2 = memory_get_usage(); // 36640
+                // $time_end = microtime_float();
+                // $time = $time_end - $time_start;
+                // echo "Did nothing in $time seconds<br>";
+                // echo convertSize($memory1).' - <br>';
+                // if($memory2 > $memory1){
+                //     echo convertSize($memory2).' - <br>';
+                //     echo convertSize($memory2 - $memory1).' -- <br>';
+                // }
+                $this->logs[]       = 'get';
+                $this->logs[]       = $response;
+                $this->logs[]       = 'headers';
+                $this->logs[]       = $headers;
+                curl_close($ch);
+
+                return json_decode($response, true);
+            } else {
+                $this->errors[] = 'Location is missing';
+            }
+        } else {
+            $this->errors[] = 'Type is required';
+        }
+    }
+
+    /**
+     * get
+     *
+     * @param  mixed $args
+     * @return void
+     */
     function get($args = ['type' => null])
     {
         if ($args['type'] != null) {
@@ -150,6 +218,7 @@ class Mkg
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($ch, CURLOPT_TCP_FASTOPEN, 1);
                 $response = curl_exec($ch);
                 $this->logs[]       = 'get';
                 $this->logs[]       = $response;
